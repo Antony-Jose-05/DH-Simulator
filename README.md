@@ -7,12 +7,10 @@
 
 ```
 dh_app/
-├── backend/
-│   ├── main.py           ← FastAPI app (all crypto logic)
-│   └── requirements.txt  ← Python dependencies
-├── frontend/
-│   └── index.html        ← Interactive step-by-step UI
-└── run.py                ← One-click launcher
+├── main.py           ← FastAPI app (all crypto logic)
+├── requirements.txt  ← Python dependencies
+├── index.html        ← Interactive step-by-step UI
+└── run.py            ← One-click launcher
 ```
 
 ---
@@ -32,7 +30,6 @@ This will automatically install dependencies, start the backend, and open the fr
 #### Step 1 — Start the backend
 
 ```bash
-cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
@@ -44,7 +41,7 @@ http://localhost:8000/docs
 
 #### Step 2 — Open the frontend
 
-Just open `frontend/index.html` in your browser.
+Just open `index.html` in your browser.
 No build step, no server needed for the frontend.
 
 ---

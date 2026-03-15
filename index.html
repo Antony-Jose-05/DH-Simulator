@@ -7,295 +7,125 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg:      #0d0f14;
-    --bg2:     #13161d;
-    --bg3:     #1a1e28;
-    --border:  rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.13);
-    --text:    #e8eaf0;
-    --muted:   #6b7090;
-    --alice:        #3b82f6;
-    --alice-bg:     rgba(59,130,246,0.09);
-    --alice-border: rgba(59,130,246,0.28);
-    --bob:          #10b981;
-    --bob-bg:       rgba(16,185,129,0.09);
-    --bob-border:   rgba(16,185,129,0.28);
-    --eve:        #ef4444;
-    --eve-bg:     rgba(239,68,68,0.09);
-    --eve-border: rgba(239,68,68,0.28);
-    --accent:    #6366f1;
-    --accent-bg: rgba(99,102,241,0.11);
-    --success:    #10b981;
-    --success-bg: rgba(16,185,129,0.08);
-    --warn:    #f59e0b;
-    --warn-bg: rgba(245,158,11,0.08);
-    --danger:    #ef4444;
-    --danger-bg: rgba(239,68,68,0.08);
+    --bg: #0d0f14; --bg2: #13161d; --bg3: #1a1e28;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0; --muted: #6b7090;
+    --alice: #3b82f6; --alice-bg: rgba(59,130,246,0.09); --alice-border: rgba(59,130,246,0.28);
+    --bob: #10b981; --bob-bg: rgba(16,185,129,0.09); --bob-border: rgba(16,185,129,0.28);
+    --eve: #ef4444; --eve-bg: rgba(239,68,68,0.09); --eve-border: rgba(239,68,68,0.28);
+    --accent: #6366f1; --accent-bg: rgba(99,102,241,0.11);
+    --success: #10b981; --success-bg: rgba(16,185,129,0.08);
+    --warn: #f59e0b; --warn-bg: rgba(245,158,11,0.08);
+    --danger: #ef4444; --danger-bg: rgba(239,68,68,0.08);
   }
+  body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  body {
-    font-family: 'Syne', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
-
-  /* ── Header ───────────────────────────── */
-  header {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 2rem 2.5rem 1.6rem;
-  }
-  .header-tag {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    background: var(--accent-bg);
-    border: 1px solid rgba(99,102,241,0.22);
-    padding: 3px 10px;
-    border-radius: 4px;
-    letter-spacing: .06em;
-    margin-bottom: 10px;
-  }
-  h1 {
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    margin-bottom: 4px;
-  }
+  header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 1.8rem 2.5rem 1.4rem; }
+  h1 { font-size: clamp(1.4rem,4vw,2.1rem); font-weight: 800; letter-spacing: -.03em; margin-bottom: 4px; }
   h1 span { color: var(--accent); }
   .subtitle { font-size: 13px; color: var(--muted); }
-  .api-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    margin-top: 12px;
-    padding: 4px 10px;
-    border-radius: 5px;
-    border: 1px solid var(--border2);
-    background: var(--bg3);
-    color: var(--muted);
-  }
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--muted);
-    transition: background .3s;
-  }
-  .status-dot.ok  { background: var(--success); }
-  .status-dot.err { background: var(--danger); }
+  .api-status { display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:11px; margin-top:10px; padding:4px 10px; border-radius:5px; border:1px solid var(--border2); background:var(--bg3); color:var(--muted); }
+  .status-dot { width:7px; height:7px; border-radius:50%; background:var(--muted); transition:background .3s; }
+  .status-dot.ok { background:var(--success); } .status-dot.err { background:var(--danger); }
 
-  /* ── Main layout ──────────────────────── */
-  main { max-width: 980px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  main { max-width:1100px; margin:0 auto; padding:1.8rem 1.5rem 4rem; }
 
-  /* ── Tabs ─────────────────────────────── */
-  .tab-bar {
-    display: flex;
-    gap: 5px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 5px;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .tab-btn {
-    flex: 1;
-    min-width: 150px;
-    padding: 9px 14px;
-    border-radius: 8px;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all .18s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-  }
-  .tab-btn:hover { color: var(--text); background: var(--bg3); }
-  .tab-btn.active { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); }
-  .tab-num {
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: var(--accent-bg);
-    color: var(--accent);
-    font-size: 11px;
-    line-height: 20px;
-    text-align: center;
-    flex-shrink: 0;
-  }
-  .tab-btn.active .tab-num { background: var(--accent); color: #fff; }
+  /* ── Tabs ── */
+  .tab-bar { display:flex; gap:5px; background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:5px; margin-bottom:1.5rem; flex-wrap:wrap; }
+  .tab-btn { flex:1; min-width:150px; padding:9px 14px; border-radius:8px; border:none; background:transparent; color:var(--muted); font-family:'Syne',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all .18s; display:flex; align-items:center; justify-content:center; gap:7px; }
+  .tab-btn:hover { color:var(--text); background:var(--bg3); }
+  .tab-btn.active { background:var(--bg3); color:var(--text); border:1px solid var(--border2); }
+  .tab-num { width:20px; height:20px; border-radius:50%; background:var(--accent-bg); color:var(--accent); font-size:11px; line-height:20px; text-align:center; flex-shrink:0; }
+  .tab-btn.active .tab-num { background:var(--accent); color:#fff; }
+  .panel { display:none; } .panel.show { display:block; }
 
-  /* ── Panel ────────────────────────────── */
-  .panel { display: none; }
-  .panel.show { display: block; }
+  /* ── Two-col layout ── */
+  .sim-layout { display:grid; grid-template-columns:280px 1fr; gap:1.25rem; align-items:start; }
+  @media(max-width:720px){ .sim-layout { grid-template-columns:1fr; } }
 
-  /* ── Top bar inside panel ─────────────── */
-  .panel-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-  }
-  .chip {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 6px;
-    padding: 4px 11px;
-    color: var(--text);
-  }
-  .chip b { color: var(--accent); }
-  .run-btn {
-    margin-left: auto;
-    padding: 7px 18px;
-    border-radius: 8px;
-    border: 1px solid var(--border2);
-    background: var(--bg3);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .run-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .run-btn:disabled { opacity: .4; cursor: default; }
+  /* ── Input panel ── */
+  .input-panel { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:1.25rem; position:sticky; top:1rem; }
+  .input-panel h3 { font-size:13px; font-weight:700; margin-bottom:1rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+  .input-group { margin-bottom:12px; }
+  .input-group label { display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:5px; }
+  .input-row { display:flex; gap:6px; align-items:center; }
+  .sim-input { flex:1; background:var(--bg3); border:1px solid var(--border2); border-radius:7px; padding:7px 10px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:13px; outline:none; transition:border .15s; width:100%; }
+  .sim-input:focus { border-color:var(--accent); }
+  .sim-input.err { border-color:var(--danger); }
+  .rand-btn { padding:7px 9px; background:var(--bg3); border:1px solid var(--border2); border-radius:7px; color:var(--muted); cursor:pointer; font-size:13px; transition:all .15s; flex-shrink:0; }
+  .rand-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .input-err { font-size:11px; color:var(--danger); margin-top:4px; font-family:'JetBrains Mono',monospace; display:none; }
+  .input-err.show { display:block; }
+  .divider { height:1px; background:var(--border); margin:14px 0; }
+  .section-tag { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px; margin-bottom:10px; display:inline-block; }
+  .tag-alice { background:var(--alice-bg); color:var(--alice); }
+  .tag-bob   { background:var(--bob-bg);   color:var(--bob); }
+  .tag-eve   { background:var(--eve-bg);   color:var(--eve); }
+  .run-btn { width:100%; padding:10px; border-radius:9px; border:1px solid var(--accent); background:var(--accent-bg); color:var(--accent); font-family:'Syne',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:all .15s; margin-top:14px; }
+  .run-btn:hover { background:var(--accent); color:#fff; }
+  .run-btn:disabled { opacity:.4; cursor:default; }
 
-  /* ── Step card ────────────────────────── */
-  .step-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    min-height: 160px;
-    animation: fadeUp .22s ease;
-  }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
-  .step-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 5px; }
-  .step-title { font-size: 17px; font-weight: 700; letter-spacing: -.01em; margin-bottom: 5px; }
-  .step-desc  { font-size: 13px; color: var(--muted); margin-bottom: 1.1rem; line-height: 1.6; }
+  /* ── Steps panel ── */
+  .steps-panel {}
+  .step-card { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:1.4rem; margin-bottom:10px; opacity:0; transform:translateY(10px); transition:opacity .35s ease, transform .35s ease; }
+  .step-card.visible { opacity:1; transform:none; }
+  .step-lbl { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-bottom:5px; }
+  .step-title { font-size:16px; font-weight:700; letter-spacing:-.01em; margin-bottom:5px; }
+  .step-desc  { font-size:13px; color:var(--muted); margin-bottom:1rem; line-height:1.6; }
 
-  /* ── Actor cards ──────────────────────── */
-  .actor-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 10px; margin: 10px 0; }
-  .actor { border-radius: 10px; padding: 12px 14px; border: 1px solid; }
-  .actor-alice   { background: var(--alice-bg);    border-color: var(--alice-border); }
-  .actor-bob     { background: var(--bob-bg);      border-color: var(--bob-border); }
-  .actor-eve { background: var(--eve-bg);  border-color: var(--eve-border); }
-  .actor-neutral { background: var(--accent-bg);   border-color: rgba(99,102,241,.28); }
-  .badge {
-    display: inline-block;
-    font-size: 10px; font-weight: 700;
-    letter-spacing: .07em; text-transform: uppercase;
-    padding: 2px 8px; border-radius: 4px; margin-bottom: 7px;
-  }
-  .actor-alice   .badge { background: rgba(59,130,246,.2);  color: var(--alice); }
-  .actor-bob     .badge { background: rgba(16,185,129,.2);  color: var(--bob); }
-  .actor-eve .badge { background: rgba(239,68,68,.2);   color: var(--eve); }
-  .actor-neutral .badge { background: rgba(99,102,241,.2);  color: var(--accent); }
-  .actor-name { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-  .kv { margin: 4px 0; }
-  .kv .k { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-  .kv .v { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); word-break: break-all; }
+  /* ── Actor cards ── */
+  .actor-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin:10px 0; }
+  .actor { border-radius:10px; padding:11px 13px; border:1px solid; }
+  .actor-alice   { background:var(--alice-bg); border-color:var(--alice-border); }
+  .actor-bob     { background:var(--bob-bg);   border-color:var(--bob-border); }
+  .actor-eve     { background:var(--eve-bg);   border-color:var(--eve-border); }
+  .actor-neutral { background:var(--accent-bg); border-color:rgba(99,102,241,.28); }
+  .badge { display:inline-block; font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; padding:2px 8px; border-radius:4px; margin-bottom:7px; }
+  .actor-alice   .badge { background:rgba(59,130,246,.2);  color:var(--alice); }
+  .actor-bob     .badge { background:rgba(16,185,129,.2);  color:var(--bob); }
+  .actor-eve     .badge { background:rgba(239,68,68,.2);   color:var(--eve); }
+  .actor-neutral .badge { background:rgba(99,102,241,.2);  color:var(--accent); }
+  .actor-name { font-size:13px; font-weight:700; margin-bottom:7px; }
+  .kv { margin:3px 0; }
+  .kv .k { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  .kv .v { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text); word-break:break-all; }
+  .kv .v.highlight { color:var(--accent); font-weight:600; }
 
-  /* ── Arrow row ────────────────────────── */
-  .arr-row {
-    display: flex; align-items: center; gap: 8px;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    color: var(--muted); margin: 7px 0;
-  }
-  .arr-line { flex: 1; height: 1px; background: var(--border2); position: relative; }
-  .arr-line::after { content: '▶'; position: absolute; right: -6px; top: -7px; font-size: 10px; color: var(--muted); }
-  .arr-line.red { background: var(--danger); }
-  .arr-line.red::after { color: var(--danger); }
+  /* ── Arrow row ── */
+  .arr-row { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin:7px 0; }
+  .arr-line { flex:1; height:1px; background:var(--border2); position:relative; }
+  .arr-line::after { content:'▶'; position:absolute; right:-6px; top:-7px; font-size:10px; color:var(--muted); }
+  .arr-line.red { background:var(--danger); } .arr-line.red::after { color:var(--danger); }
+  .arr-line.green { background:var(--success); } .arr-line.green::after { color:var(--success); }
 
-  /* ── Alerts ───────────────────────────── */
-  .alert {
-    border-radius: 9px; padding: 9px 13px;
-    font-size: 13px; margin: 10px 0;
-    display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
-    border: 1px solid;
-  }
-  .alert-icon { flex-shrink: 0; margin-top: 1px; }
-  .alert-success { background: var(--success-bg); border-color: rgba(16,185,129,.22); color: #6ee7b7; }
-  .alert-warn    { background: var(--warn-bg);    border-color: rgba(245,158,11,.22);  color: #fcd34d; }
-  .alert-danger  { background: var(--danger-bg);  border-color: rgba(239,68,68,.22);   color: #fca5a5; }
-  .alert-info    { background: var(--accent-bg);  border-color: rgba(99,102,241,.22);  color: #a5b4fc; }
+  /* ── Alerts ── */
+  .alert { border-radius:9px; padding:9px 13px; font-size:13px; margin:10px 0; display:flex; align-items:flex-start; gap:8px; line-height:1.5; border:1px solid; }
+  .alert-icon { flex-shrink:0; }
+  .alert-success { background:var(--success-bg); border-color:rgba(16,185,129,.22); color:#6ee7b7; }
+  .alert-warn    { background:var(--warn-bg);    border-color:rgba(245,158,11,.22);  color:#fcd34d; }
+  .alert-danger  { background:var(--danger-bg);  border-color:rgba(239,68,68,.22);   color:#fca5a5; }
+  .alert-info    { background:var(--accent-bg);  border-color:rgba(99,102,241,.22);  color:#a5b4fc; }
 
-  /* ── Formula ──────────────────────────── */
-  .formula {
-    font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 6px; padding: 7px 12px; color: var(--accent); margin: 7px 0;
-  }
+  .formula { font-family:'JetBrains Mono',monospace; font-size:12px; background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:7px 12px; color:var(--accent); margin:7px 0; }
 
-  /* ── Step nav ─────────────────────────── */
-  .step-nav { display: flex; align-items: center; gap: 10px; margin-top: 1.2rem; }
-  .nav-btn {
-    padding: 8px 18px; border-radius: 8px;
-    border: 1px solid var(--border2); background: var(--bg3);
-    color: var(--text); font-family: 'Syne', sans-serif;
-    font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s;
-  }
-  .nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-  .nav-btn:disabled { opacity: .3; cursor: default; }
-  .dots { display: flex; gap: 5px; flex: 1; justify-content: center; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); transition: all .2s; }
-  .dot.active { background: var(--accent); transform: scale(1.2); }
-  .dot.done   { background: var(--success); }
-  .step-ctr { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); white-space: nowrap; }
+  /* ── Loading ── */
+  .loading { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:2.5rem; display:flex; align-items:center; justify-content:center; gap:10px; color:var(--muted); font-size:13px; font-family:'JetBrains Mono',monospace; }
+  .spinner { width:16px; height:16px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 
-  /* ── Loading skeleton ─────────────────── */
-  .loading {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 16px; padding: 2.5rem;
-    display: flex; align-items: center; justify-content: center;
-    gap: 10px; color: var(--muted); font-size: 13px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid var(--border2);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:1rem; }
+  .legend-item { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--muted); }
+  .legend-dot { width:9px; height:9px; border-radius:50%; }
 
-  /* ── Legend ───────────────────────────── */
-  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 1.1rem; }
-  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
-  .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
-
-  /* ── Section label ────────────────────── */
-  .sec-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .09em; margin: 12px 0 6px; }
-
-  footer {
-    text-align: center; padding: 1.8rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; color: var(--muted);
-    border-top: 1px solid var(--border);
-  }
+  footer { text-align:center; padding:1.8rem; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); border-top:1px solid var(--border); }
 </style>
 </head>
 <body>
 
 <header>
   <h1>Diffie–Hellman <span>Key Exchange</span> Simulator</h1>
-  <p class="subtitle">Step-by-step: Basic DH · MITM Attack · Digital Signature Defence</p>
+  <p class="subtitle">Edit any value and click Simulate — watch the math update live</p>
   <div class="api-status">
     <div class="status-dot" id="status-dot"></div>
     <span id="status-text">Connecting to API...</span>
@@ -304,63 +134,165 @@
 
 <main>
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="showTab('dh')">
-      <span class="tab-num">1</span> DH Key Exchange
-    </button>
-    <button class="tab-btn" onclick="showTab('mitm')">
-      <span class="tab-num">2</span> MITM Attack
-    </button>
-    <button class="tab-btn" onclick="showTab('sig')">
-      <span class="tab-num">3</span> Signature Defence
-    </button>
+    <button class="tab-btn active" onclick="showTab('dh')"><span class="tab-num">1</span>DH Exchange</button>
+    <button class="tab-btn" onclick="showTab('mitm')"><span class="tab-num">2</span>MITM Attack</button>
+    <button class="tab-btn" onclick="showTab('sig')"><span class="tab-num">3</span>Signature Defence</button>
   </div>
 
-  <!-- PART 1 -->
+  <!-- ══ PART 1 ══ -->
   <div id="tab-dh" class="panel show">
-    <div class="panel-bar">
-      <span class="chip">p = <b>23</b></span>
-      <span class="chip">g = <b>5</b></span>
-      <span class="chip">public = g^private mod p</span>
-      <button class="run-btn" id="btn-dh" onclick="loadDH()">↻ New Exchange</button>
+    <div class="sim-layout">
+      <div class="input-panel">
+        <h3>Parameters</h3>
+        <div class="input-group">
+          <label>Prime (p)</label>
+          <div class="input-row">
+            <input class="sim-input" id="dh-p" type="number" value="23" min="5" />
+          </div>
+          <div class="input-err" id="dh-p-err"></div>
+        </div>
+        <div class="input-group">
+          <label>Generator (g)</label>
+          <input class="sim-input" id="dh-g" type="number" value="5" min="2" />
+          <div class="input-err" id="dh-g-err"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="section-tag tag-alice">Alice</div>
+        <div class="input-group">
+          <label>Private key</label>
+          <div class="input-row">
+            <input class="sim-input" id="dh-alice-priv" type="number" value="6" min="2" />
+            <button class="rand-btn" onclick="randomize('dh-alice-priv','dh-p')" title="Random">⟳</button>
+          </div>
+        </div>
+        <div class="section-tag tag-bob">Bob</div>
+        <div class="input-group">
+          <label>Private key</label>
+          <div class="input-row">
+            <input class="sim-input" id="dh-bob-priv" type="number" value="15" min="2" />
+            <button class="rand-btn" onclick="randomize('dh-bob-priv','dh-p')" title="Random">⟳</button>
+          </div>
+        </div>
+        <button class="run-btn" id="btn-dh" onclick="runDH()">▶ Simulate</button>
+      </div>
+      <div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--alice)"></div>Alice</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--bob)"></div>Bob</div>
+        </div>
+        <div id="dh-steps"><div class="loading"><div class="spinner"></div>Click Simulate to start</div></div>
+      </div>
     </div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--alice)"></div>Alice</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bob)"></div>Bob</div>
-    </div>
-    <div id="dh-content"><div class="loading"><div class="spinner"></div>Loading...</div></div>
-    <div class="step-nav" id="dh-nav"></div>
   </div>
 
-  <!-- PART 2 -->
+  <!-- ══ PART 2 ══ -->
   <div id="tab-mitm" class="panel">
-    <div class="panel-bar">
-      <span class="chip">p = <b>23</b></span>
-      <span class="chip">g = <b>5</b></span>
-      <button class="run-btn" id="btn-mitm" onclick="loadMITM()">↻ Simulate Attack</button>
+    <div class="sim-layout">
+      <div class="input-panel">
+        <h3>Parameters</h3>
+        <div class="input-group">
+          <label>Prime (p)</label>
+          <input class="sim-input" id="mitm-p" type="number" value="23" min="5" />
+          <div class="input-err" id="mitm-p-err"></div>
+        </div>
+        <div class="input-group">
+          <label>Generator (g)</label>
+          <input class="sim-input" id="mitm-g" type="number" value="5" min="2" />
+        </div>
+        <div class="divider"></div>
+        <div class="section-tag tag-alice">Alice</div>
+        <div class="input-group">
+          <label>Private key</label>
+          <div class="input-row">
+            <input class="sim-input" id="mitm-alice-priv" type="number" value="6" min="2" />
+            <button class="rand-btn" onclick="randomize('mitm-alice-priv','mitm-p')">⟳</button>
+          </div>
+        </div>
+        <div class="section-tag tag-bob">Bob</div>
+        <div class="input-group">
+          <label>Private key</label>
+          <div class="input-row">
+            <input class="sim-input" id="mitm-bob-priv" type="number" value="15" min="2" />
+            <button class="rand-btn" onclick="randomize('mitm-bob-priv','mitm-p')">⟳</button>
+          </div>
+        </div>
+        <div class="section-tag tag-eve">Eve</div>
+        <div class="input-group">
+          <label>Private key (Alice side)</label>
+          <div class="input-row">
+            <input class="sim-input" id="mitm-eve-a" type="number" value="13" min="2" />
+            <button class="rand-btn" onclick="randomize('mitm-eve-a','mitm-p')">⟳</button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Private key (Bob side)</label>
+          <div class="input-row">
+            <input class="sim-input" id="mitm-eve-b" type="number" value="9" min="2" />
+            <button class="rand-btn" onclick="randomize('mitm-eve-b','mitm-p')">⟳</button>
+          </div>
+        </div>
+        <button class="run-btn" id="btn-mitm" onclick="runMITM()">▶ Simulate Attack</button>
+      </div>
+      <div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--alice)"></div>Alice</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--bob)"></div>Bob</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--eve)"></div>Eve (attacker)</div>
+        </div>
+        <div id="mitm-steps"><div class="loading"><div class="spinner"></div>Click Simulate Attack to start</div></div>
+      </div>
     </div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--alice)"></div>Alice</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bob)"></div>Bob</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--eve)"></div>Eve (attacker)</div>
-    </div>
-    <div id="mitm-content"><div class="loading"><div class="spinner"></div>Loading...</div></div>
-    <div class="step-nav" id="mitm-nav"></div>
   </div>
 
-  <!-- PART 3 -->
+  <!-- ══ PART 3 ══ -->
   <div id="tab-sig" class="panel">
-    <div class="panel-bar">
-      <span class="chip">Alice RSA: p=61, q=53</span>
-      <span class="chip">Bob RSA: p=67, q=71</span>
-      <button class="run-btn" id="btn-sig" onclick="loadSig()">↻ New Secure Exchange</button>
+    <div class="sim-layout">
+      <div class="input-panel">
+        <h3>Parameters</h3>
+        <div class="input-group">
+          <label>Prime (p)</label>
+          <input class="sim-input" id="sig-p" type="number" value="23" min="5" />
+        </div>
+        <div class="input-group">
+          <label>Generator (g)</label>
+          <input class="sim-input" id="sig-g" type="number" value="5" min="2" />
+        </div>
+        <div class="divider"></div>
+        <div class="section-tag tag-alice">Alice</div>
+        <div class="input-group">
+          <label>Private key</label>
+          <div class="input-row">
+            <input class="sim-input" id="sig-alice-priv" type="number" value="6" min="2" />
+            <button class="rand-btn" onclick="randomize('sig-alice-priv','sig-p')">⟳</button>
+          </div>
+        </div>
+        <div class="section-tag tag-bob">Bob</div>
+        <div class="input-group">
+          <label>Private key</label>
+          <div class="input-row">
+            <input class="sim-input" id="sig-bob-priv" type="number" value="15" min="2" />
+            <button class="rand-btn" onclick="randomize('sig-bob-priv','sig-p')">⟳</button>
+          </div>
+        </div>
+        <div class="section-tag tag-eve">Eve</div>
+        <div class="input-group">
+          <label>Private key (forged attempt)</label>
+          <div class="input-row">
+            <input class="sim-input" id="sig-eve-priv" type="number" value="11" min="2" />
+            <button class="rand-btn" onclick="randomize('sig-eve-priv','sig-p')">⟳</button>
+          </div>
+        </div>
+        <button class="run-btn" id="btn-sig" onclick="runSig()">▶ Simulate</button>
+      </div>
+      <div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--alice)"></div>Alice</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--bob)"></div>Bob</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--eve)"></div>Eve (blocked)</div>
+        </div>
+        <div id="sig-steps"><div class="loading"><div class="spinner"></div>Click Simulate to start</div></div>
+      </div>
     </div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--alice)"></div>Alice</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bob)"></div>Bob</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--eve)"></div>Eve (blocked)</div>
-    </div>
-    <div id="sig-content"><div class="loading"><div class="spinner"></div>Loading...</div></div>
-    <div class="step-nav" id="sig-nav"></div>
   </div>
 </main>
 
@@ -368,302 +300,287 @@
 
 <script>
 const API = "http://localhost:8000";
-
-// ── State ──────────────────────────────────────────────────
-const state = {
-  dh:   { steps: [], idx: 0 },
-  mitm: { steps: [], idx: 0 },
-  sig:  { steps: [], idx: 0 },
-};
+const $ = id => document.getElementById(id);
 
 // ── Helpers ────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
+function val(id) { return parseInt($(id).value) || 0; }
 
 function actor(cls, badge, name, kvs) {
   return `<div class="actor actor-${cls}">
-    <div class="badge">${badge}</div>
-    <div class="actor-name">${name}</div>
-    ${kvs.map(([k,v]) => `<div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}
+    <div class="badge">${badge}</div><div class="actor-name">${name}</div>
+    ${kvs.map(([k,v,hl])=>`<div class="kv"><div class="k">${k}</div><div class="v${hl?' highlight':''}">${v}</div></div>`).join('')}
   </div>`;
 }
-function arrowRow(label, red = false) {
-  return `<div class="arr-row">
-    <div class="arr-line${red ? ' red' : ''}"></div>
-    <span>${label}</span>
-  </div>`;
+function arrRow(label, color='') {
+  return `<div class="arr-row"><div class="arr-line${color?' '+color:''}"></div><span>${label}</span></div>`;
 }
 function alertBox(type, icon, msg) {
   return `<div class="alert alert-${type}"><span class="alert-icon">${icon}</span><span>${msg}</span></div>`;
 }
-function formulaBox(f) {
-  return `<div class="formula">${f}</div>`;
-}
-function secLbl(t) { return `<div class="sec-lbl">${t}</div>`; }
+function formula(f) { return `<div class="formula">${f}</div>`; }
 
-function render(prefix) {
-  const { steps, idx } = state[prefix];
-  $(`${prefix}-content`).innerHTML = steps[idx];
-  const dots = steps.map((_,i) => `<div class="dot ${i===idx?'active':i<idx?'done':''}"></div>`).join('');
-  $(`${prefix}-nav`).innerHTML = `
-    <button class="nav-btn" onclick="nav('${prefix}',-1)" ${idx===0?'disabled':''}>← Prev</button>
-    <div class="dots">${dots}</div>
-    <span class="step-ctr">${idx+1} / ${steps.length}</span>
-    <button class="nav-btn" onclick="nav('${prefix}',1)" ${idx===steps.length-1?'disabled':''}>Next →</button>
-  `;
-}
-function nav(prefix, dir) {
-  const s = state[prefix];
-  s.idx = Math.max(0, Math.min(s.steps.length - 1, s.idx + dir));
-  render(prefix);
-}
-function showTab(t) {
-  ['dh','mitm','sig'].forEach((id, i) => {
-    $('tab-' + id).classList.toggle('show', id === t);
-    document.querySelectorAll('.tab-btn')[i].classList.toggle('active', id === t);
+// Animate steps in with staggered delay
+function showSteps(containerId, cards) {
+  const container = $(containerId);
+  container.innerHTML = cards.map((html, i) =>
+    `<div class="step-card" style="transition-delay:${i * 120}ms">${html}</div>`
+  ).join('');
+  requestAnimationFrame(() => {
+    container.querySelectorAll('.step-card').forEach(c => c.classList.add('visible'));
   });
 }
-function setLoading(prefix) {
-  $(`${prefix}-content`).innerHTML = `<div class="loading"><div class="spinner"></div>Fetching from API...</div>`;
-  $(`${prefix}-nav`).innerHTML = '';
-}
-function setBtn(id, disabled) {
-  $(id).disabled = disabled;
-  $(id).textContent = disabled ? 'Loading...' : $(id).textContent.replace('Loading...', $(id).id === 'btn-dh' ? '↻ New Exchange' : $(id).id === 'btn-mitm' ? '↻ Simulate Attack' : '↻ New Secure Exchange');
+
+function setLoading(id) {
+  $(id).innerHTML = `<div class="loading"><div class="spinner"></div>Computing...</div>`;
 }
 
-// ── API health check ───────────────────────────────────────
+function setBtn(id, loading) {
+  const btn = $(id);
+  btn.disabled = loading;
+  if (!loading) btn.textContent = btn.id === 'btn-mitm' ? '▶ Simulate Attack' : '▶ Simulate';
+  else btn.textContent = 'Running...';
+}
+
+async function randomize(inputId, pInputId) {
+  const p = val(pInputId);
+  try {
+    const r = await fetch(`${API}/api/random-private?p=${p}`);
+    if (r.ok) { const d = await r.json(); $(inputId).value = d.value; }
+    else { $(inputId).value = Math.floor(Math.random() * (p - 3)) + 2; }
+  } catch { $(inputId).value = Math.floor(Math.random() * (p - 3)) + 2; }
+}
+
+// ── API health ─────────────────────────────────────────────
 async function checkHealth() {
   try {
     const r = await fetch(`${API}/`);
-    if (r.ok) {
-      $('status-dot').className = 'status-dot ok';
-      $('status-text').textContent = 'API connected — localhost:8000';
-    } else { throw new Error(); }
+    if (r.ok) { $('status-dot').className = 'status-dot ok'; $('status-text').textContent = 'API connected — localhost:8000'; }
+    else throw new Error();
   } catch {
     $('status-dot').className = 'status-dot err';
     $('status-text').textContent = 'API offline — run: uvicorn main:app --reload';
   }
 }
 
-// ── Part 1: DH Exchange ────────────────────────────────────
-async function loadDH() {
-  setLoading('dh');
-  setBtn('btn-dh', true);
+// ── Tab switching ──────────────────────────────────────────
+function showTab(t) {
+  ['dh','mitm','sig'].forEach((id,i) => {
+    $('tab-'+id).classList.toggle('show', id===t);
+    document.querySelectorAll('.tab-btn')[i].classList.toggle('active', id===t);
+  });
+}
+
+// ── Part 1: DH ────────────────────────────────────────────
+async function runDH() {
+  setLoading('dh-steps'); setBtn('btn-dh', true);
   try {
-    const res = await fetch(`${API}/api/dh/exchange`);
-    const d   = await res.json();
+    const body = {
+      p: val('dh-p'), g: val('dh-g'),
+      alice_private: val('dh-alice-priv'),
+      bob_private:   val('dh-bob-priv'),
+    };
+    const res = await fetch(`${API}/api/dh/exchange`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const e = await res.json();
+      $('dh-steps').innerHTML = alertBox('danger','❌', e.detail || 'Invalid input.');
+      return;
+    }
+    const d = await res.json();
     const { alice, bob, params, match, shared_secret } = d;
 
-    state.dh.steps = [
-      `<div class="step-card">
-        <div class="step-lbl">Step 1 of 4</div>
-        <div class="step-title">Public parameters agreed</div>
-        <div class="step-desc">Alice and Bob agree on a prime <b>p</b> and a generator <b>g</b>. These are completely public — security does NOT rely on hiding them.</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <span class="chip" style="font-size:14px">p = <b>${params.p}</b> (prime)</span>
-          <span class="chip" style="font-size:14px">g = <b>${params.g}</b> (generator)</span>
-        </div>
-        ${alertBox('info','ℹ️','Even if an attacker sees p and g, they cannot compute the shared secret without solving the Discrete Logarithm Problem.')}
-      </div>`,
+    showSteps('dh-steps', [
+      `<div class="step-lbl">Step 1 — Public parameters</div>
+       <div class="step-title">Agreed public values</div>
+       <div class="step-desc">Both parties use the same prime p and generator g. These are public — anyone can see them.</div>
+       <div style="display:flex;gap:10px;flex-wrap:wrap">
+         <span style="font-family:'JetBrains Mono',monospace;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:5px 12px">p = <b style="color:var(--accent)">${params.p}</b></span>
+         <span style="font-family:'JetBrains Mono',monospace;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:5px 12px">g = <b style="color:var(--accent)">${params.g}</b></span>
+       </div>
+       ${alertBox('info','ℹ️','Security relies on the Discrete Logarithm Problem — not on hiding p or g.')}`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 2 of 4</div>
-        <div class="step-title">Private keys chosen</div>
-        <div class="step-desc">Each party picks a random secret number. These values <b>never leave their device</b> under any circumstances.</div>
-        <div class="actor-row">
-          ${actor('alice','Alice','Alice',[ ['private key (secret)', alice.private_key], ['range', `random from 2 to ${params.p - 2}`] ])}
-          ${actor('bob','Bob','Bob',[ ['private key (secret)', bob.private_key], ['range', `random from 2 to ${params.p - 2}`] ])}
-        </div>
-        ${alertBox('warn','🔒','Private keys must NEVER be transmitted or shared. If exposed, the entire exchange is compromised.')}
-      </div>`,
+      `<div class="step-lbl">Step 2 — Private keys</div>
+       <div class="step-title">Secret values chosen</div>
+       <div class="step-desc">Each party picks a private key. These never leave their device.</div>
+       <div class="actor-row">
+         ${actor('alice','Alice','Alice',[['private key (secret)', alice.private_key, false]])}
+         ${actor('bob','Bob','Bob',[['private key (secret)', bob.private_key, false]])}
+       </div>`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 3 of 4</div>
-        <div class="step-title">Public keys computed & exchanged</div>
-        <div class="step-desc">Each party computes their public key using: <code>public = g^private mod p</code>, then sends it over the network.</div>
-        <div class="actor-row">
-          ${actor('alice','Alice','Alice',[ ['public key', alice.public_key], ['formula', alice.formula] ])}
-          ${actor('bob','Bob','Bob',[ ['public key', bob.public_key], ['formula', bob.formula] ])}
-        </div>
-        ${arrowRow(`Alice → Bob sends: ${alice.public_key}`)}
-        ${arrowRow(`Bob → Alice sends: ${bob.public_key}`)}
-        ${alertBox('info','👁️','An attacker can see these public keys — that is fine. Computing the private key from a public key requires solving the Discrete Logarithm Problem.')}
-      </div>`,
+      `<div class="step-lbl">Step 3 — Public keys</div>
+       <div class="step-title">Public keys computed & exchanged</div>
+       <div class="step-desc">Each computes <code>public = g^private mod p</code> and sends it over the network.</div>
+       <div class="actor-row">
+         ${actor('alice','Alice','Alice',[['public key', alice.public_key, true],['formula', alice.formula, false]])}
+         ${actor('bob','Bob','Bob',[['public key', bob.public_key, true],['formula', bob.formula, false]])}
+       </div>
+       ${arrRow(`Alice → Bob: ${alice.public_key}`, 'green')}
+       ${arrRow(`Bob → Alice: ${bob.public_key}`, 'green')}`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 4 of 4</div>
-        <div class="step-title">Shared secret computed</div>
-        <div class="step-desc">Each party raises the <i>other's</i> public key to their own private key. The math guarantees both arrive at the same value — without ever sending it!</div>
-        <div class="actor-row">
-          ${actor('alice','Alice','Alice computes',[ ['formula', alice.secret_formula], ['shared secret', alice.shared_secret] ])}
-          ${actor('bob','Bob','Bob computes',[ ['formula', bob.secret_formula], ['shared secret', bob.shared_secret] ])}
-        </div>
-        ${match
-          ? alertBox('success','✅',`Shared secret established: <b>${shared_secret}</b> — both sides computed the same value without ever transmitting it!`)
-          : alertBox('danger','❌','Shared secret mismatch — something went wrong.')}
-      </div>`,
-    ];
-    state.dh.idx = 0;
-    render('dh');
+      `<div class="step-lbl">Step 4 — Shared secret</div>
+       <div class="step-title">Shared secret independently computed</div>
+       <div class="step-desc">Each raises the other's public key to their own private key. Math guarantees same result!</div>
+       <div class="actor-row">
+         ${actor('alice','Alice','Alice computes',[['formula', alice.secret_formula, false],['shared secret', alice.shared_secret, true]])}
+         ${actor('bob','Bob','Bob computes',[['formula', bob.secret_formula, false],['shared secret', bob.shared_secret, true]])}
+       </div>
+       ${match
+         ? alertBox('success','✅',`Shared secret = <b>${shared_secret}</b>. Both sides got the same value without ever sending it!`)
+         : alertBox('danger','❌','Mismatch — check your inputs.')}`,
+    ]);
   } catch(e) {
-    $('dh-content').innerHTML = alertBox('danger','❌','Could not reach API. Make sure the backend is running: <code>uvicorn main:app --reload</code>');
+    $('dh-steps').innerHTML = alertBox('danger','❌','Cannot reach API. Make sure the backend is running.');
   }
-  $('btn-dh').disabled = false;
-  $('btn-dh').textContent = '↻ New Exchange';
+  setBtn('btn-dh', false);
 }
 
-// ── Part 2: MITM Attack ────────────────────────────────────
-async function loadMITM() {
-  setLoading('mitm');
-  setBtn('btn-mitm', true);
+// ── Part 2: MITM ──────────────────────────────────────────
+async function runMITM() {
+  setLoading('mitm-steps'); setBtn('btn-mitm', true);
   try {
-    const res = await fetch(`${API}/api/mitm/attack`);
-    const d   = await res.json();
-    const { alice, bob, eve, mitm_success, alice_compromised, bob_compromised } = d;
+    const body = {
+      p: val('mitm-p'), g: val('mitm-g'),
+      alice_private: val('mitm-alice-priv'),
+      bob_private:   val('mitm-bob-priv'),
+      eve_private_a: val('mitm-eve-a'),
+      eve_private_b: val('mitm-eve-b'),
+    };
+    const res = await fetch(`${API}/api/mitm/attack`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const e = await res.json();
+      $('mitm-steps').innerHTML = alertBox('danger','❌', e.detail || 'Invalid input.');
+      return;
+    }
+    const d = await res.json();
+    const { alice, bob, eve, mitm_success, alice_compromised, bob_compromised, params } = d;
 
-    state.mitm.steps = [
-      `<div class="step-card">
-        <div class="step-lbl">Step 1 of 4</div>
-        <div class="step-title">Alice & Bob generate key pairs</div>
-        <div class="step-desc">Everything starts normally. Alice and Bob each generate their DH key pairs. They are unaware that Eve is watching the channel.</div>
-        <div class="actor-row">
-          ${actor('alice','Alice','Alice',[ ['private key', alice.private_key], ['public key', alice.public_key] ])}
-          ${actor('bob','Bob','Bob',[ ['private key', bob.private_key], ['public key', bob.public_key] ])}
-        </div>
-        ${alertBox('info','ℹ️','At this point the exchange looks identical to a safe one. The vulnerability appears in the next step.')}
-      </div>`,
+    showSteps('mitm-steps', [
+      `<div class="step-lbl">Step 1 — Key generation</div>
+       <div class="step-title">Alice & Bob generate their keys</div>
+       <div class="step-desc">Both generate normal DH key pairs, unaware Eve is watching.</div>
+       <div class="actor-row">
+         ${actor('alice','Alice','Alice',[['private key', alice.private_key, false],['public key', alice.public_key, true]])}
+         ${actor('bob','Bob','Bob',[['private key', bob.private_key, false],['public key', bob.public_key, true]])}
+       </div>`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 2 of 4</div>
-        <div class="step-title">Eve positions herself in the middle</div>
-        <div class="step-desc">Eve intercepts the channel and generates <b>two separate key pairs</b> — one to use with Alice, one to use with Bob.</div>
-        <div class="actor-row">
-          ${actor('eve','Eve','Eve ↔ Alice side',[ ['fake pub sent to Alice', eve.fake_pub_sent_to_alice] ])}
-          ${actor('eve','Eve','Eve ↔ Bob side',[ ['fake pub sent to Bob', eve.fake_pub_sent_to_bob] ])}
-        </div>
-        ${alertBox('warn','⚠️','Plain Diffie-Hellman has NO authentication. Alice and Bob have no way to verify that the public keys they receive are genuine.')}
-      </div>`,
+      `<div class="step-lbl">Step 2 — Eve intercepts</div>
+       <div class="step-title">Eve generates two fake key pairs</div>
+       <div class="step-desc">Eve positions herself in the middle and creates a separate key pair for each side.</div>
+       <div class="actor-row">
+         ${actor('eve','Eve','Eve ↔ Alice side',[['private key', eve.private_key_a, false],['fake public key', eve.fake_pub_sent_to_alice, true]])}
+         ${actor('eve','Eve','Eve ↔ Bob side',[['private key', eve.private_key_b, false],['fake public key', eve.fake_pub_sent_to_bob, true]])}
+       </div>
+       ${alertBox('warn','⚠️','Plain DH has NO authentication. Alice and Bob cannot verify who sent the public key.')}`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 3 of 4</div>
-        <div class="step-title">Fake keys forwarded to both sides</div>
-        <div class="step-desc">Instead of forwarding the real keys, Eve substitutes her own. Each victim believes they are talking directly to the other.</div>
-        ${arrowRow(`Alice sends ${alice.public_key} → Eve intercepts`)}
-        ${arrowRow(`Eve sends ${eve.fake_pub_sent_to_bob} → Bob (pretending to be Alice)`, true)}
-        ${arrowRow(`Bob sends ${bob.public_key} → Eve intercepts`)}
-        ${arrowRow(`Eve sends ${eve.fake_pub_sent_to_alice} → Alice (pretending to be Bob)`, true)}
-        ${alertBox('danger','🚨','Neither Alice nor Bob can detect the substitution. They continue the exchange thinking it is secure.')}
-      </div>`,
+      `<div class="step-lbl">Step 3 — Fake keys forwarded</div>
+       <div class="step-title">Eve substitutes her own keys</div>
+       <div class="step-desc">Instead of passing through real keys, Eve swaps in her fake ones.</div>
+       ${arrRow(`Alice sends ${alice.public_key} → Eve intercepts`)}
+       ${arrRow(`Eve sends ${eve.fake_pub_sent_to_bob} → Bob  (pretending to be Alice)`, 'red')}
+       ${arrRow(`Bob sends ${bob.public_key} → Eve intercepts`)}
+       ${arrRow(`Eve sends ${eve.fake_pub_sent_to_alice} → Alice  (pretending to be Bob)`, 'red')}`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 4 of 4</div>
-        <div class="step-title">Eve decrypts all traffic</div>
-        <div class="step-desc">Eve now shares one secret with Alice and a different secret with Bob. She decrypts every message, reads it, then re-encrypts and forwards it.</div>
-        <div class="actor-row">
-          ${actor('alice','Alice (deceived)','Alice believes:',[ ['shared secret with "Bob"', alice.thinks_shared_secret_with_bob] ])}
-          ${actor('eve','Eve (attacker)','Eve knows:',[ ['secret with Alice', eve.secret_with_alice], ['secret with Bob', eve.secret_with_bob] ])}
-          ${actor('bob','Bob (deceived)','Bob believes:',[ ['shared secret with "Alice"', bob.thinks_shared_secret_with_alice] ])}
-        </div>
-        ${mitm_success
-          ? alertBox('danger','💀','MITM SUCCESS — Eve can read and modify every message. Alice compromised: ' + alice_compromised + '. Bob compromised: ' + bob_compromised + '.')
-          : alertBox('warn','⚠️','MITM partially failed — regenerate to see a successful attack.')}
-        ${alertBox('info','💡','Fix: Authenticate the public keys using digital signatures (see Part 3).')}
-      </div>`,
-    ];
-    state.mitm.idx = 0;
-    render('mitm');
+      `<div class="step-lbl">Step 4 — Eve reads everything</div>
+       <div class="step-title">Eve decrypts all traffic</div>
+       <div class="step-desc">Eve holds two separate shared secrets — one with Alice, one with Bob. She can decrypt, read, and re-encrypt all messages.</div>
+       <div class="actor-row">
+         ${actor('alice','Alice (deceived)','Alice thinks secret with Bob is',[['shared secret', alice.thinks_shared_secret_with_bob, true]])}
+         ${actor('eve','Eve','Eve knows both secrets',[['secret with Alice', eve.secret_with_alice, true],['secret with Bob', eve.secret_with_bob, true]])}
+         ${actor('bob','Bob (deceived)','Bob thinks secret with Alice is',[['shared secret', bob.thinks_shared_secret_with_alice, true]])}
+       </div>
+       ${mitm_success
+         ? alertBox('danger','💀',`MITM SUCCESS. Eve can read all messages. Alice compromised: ${alice_compromised}. Bob compromised: ${bob_compromised}.`)
+         : alertBox('warn','⚠️','MITM failed — try different private key values.')}
+       ${alertBox('info','💡','Fix: Use digital signatures to authenticate public keys (see Part 3).')}`,
+    ]);
   } catch(e) {
-    $('mitm-content').innerHTML = alertBox('danger','❌','Could not reach API. Make sure the backend is running.');
+    $('mitm-steps').innerHTML = alertBox('danger','❌','Cannot reach API. Make sure the backend is running.');
   }
-  $('btn-mitm').disabled = false;
-  $('btn-mitm').textContent = '↻ Simulate Attack';
+  setBtn('btn-mitm', false);
 }
 
-// ── Part 3: Signature Defence ──────────────────────────────
-async function loadSig() {
-  setLoading('sig');
-  setBtn('btn-sig', true);
+// ── Part 3: Signatures ─────────────────────────────────────
+async function runSig() {
+  setLoading('sig-steps'); setBtn('btn-sig', true);
   try {
-    const res = await fetch(`${API}/api/signatures/secure-exchange`);
-    const d   = await res.json();
+    const body = {
+      p: val('sig-p'), g: val('sig-g'),
+      alice_private: val('sig-alice-priv'),
+      bob_private:   val('sig-bob-priv'),
+      eve_private:   val('sig-eve-priv'),
+    };
+    const res = await fetch(`${API}/api/signatures/secure-exchange`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const e = await res.json();
+      $('sig-steps').innerHTML = alertBox('danger','❌', e.detail || 'Invalid input.');
+      return;
+    }
+    const d = await res.json();
     const { alice, bob, verification, eve_attempt, secure, shared_secret } = d;
 
-    state.sig.steps = [
-      `<div class="step-card">
-        <div class="step-lbl">Step 1 of 5</div>
-        <div class="step-title">RSA identity keys pre-shared</div>
-        <div class="step-desc">Before any DH exchange, Alice and Bob each generate an RSA key pair. Public keys are shared through a trusted channel (e.g. a Certificate Authority).</div>
-        <div class="actor-row">
-          ${actor('alice','Alice','Alice RSA',[ ['public key (e, n)', alice.rsa_public_key.join(' , ')], ['private key', '[kept secret]'] ])}
-          ${actor('bob','Bob','Bob RSA',[ ['public key (e, n)', bob.rsa_public_key.join(' , ')], ['private key', '[kept secret]'] ])}
-        </div>
-        ${alertBox('info','🔑','RSA public keys act as permanent identity certificates. Only Alice can produce a valid signature verifiable by Alice\'s public key.')}
-      </div>`,
+    showSteps('sig-steps', [
+      `<div class="step-lbl">Step 1 — RSA identity keys</div>
+       <div class="step-title">RSA key pairs pre-shared</div>
+       <div class="step-desc">Alice and Bob each have an RSA identity key pair shared through a trusted channel.</div>
+       <div class="actor-row">
+         ${actor('alice','Alice','Alice RSA',[['public key (e,n)', alice.rsa_public_key.join(', '), false],['private key','[secret]',false]])}
+         ${actor('bob','Bob','Bob RSA',[['public key (e,n)', bob.rsa_public_key.join(', '), false],['private key','[secret]',false]])}
+       </div>
+       ${alertBox('info','🔑','Only Alice can produce signatures verifiable by Alice\'s RSA public key.')}`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 2 of 5</div>
-        <div class="step-title">DH public keys generated & signed</div>
-        <div class="step-desc">Each party generates a DH key pair, hashes the public key, then signs the hash using their RSA private key.</div>
-        <div class="actor-row">
-          ${actor('alice','Alice','Alice signs',[ ['DH public key', alice.dh_public_key], ['hash(pub)', alice.dh_hash], ['RSA signature', alice.signature] ])}
-          ${actor('bob','Bob','Bob signs',[ ['DH public key', bob.dh_public_key], ['hash(pub)', bob.dh_hash], ['RSA signature', bob.signature] ])}
-        </div>
-        ${formulaBox('signature = RSA_sign( hash(dh_public_key), rsa_private_key )')}
-      </div>`,
+      `<div class="step-lbl">Step 2 — DH keys signed</div>
+       <div class="step-title">DH public keys computed & signed</div>
+       <div class="step-desc">Each party signs their DH public key with their RSA private key before sending it.</div>
+       <div class="actor-row">
+         ${actor('alice','Alice','Alice',[['DH private key', alice.private_key, false],['DH public key', alice.dh_public_key, true],['hash(pub)', alice.dh_hash, false],['signature', alice.signature, false]])}
+         ${actor('bob','Bob','Bob',[['DH private key', bob.private_key, false],['DH public key', bob.dh_public_key, true],['hash(pub)', bob.dh_hash, false],['signature', bob.signature, false]])}
+       </div>
+       ${formula('signature = RSA_sign( hash(dh_public_key), rsa_private_key )')}`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 3 of 5</div>
-        <div class="step-title">Signatures verified before use</div>
-        <div class="step-desc">Before computing the shared secret, each party verifies the received DH public key's signature using the sender's RSA public key.</div>
-        <div class="actor-row">
-          ${actor('bob','Bob verifies','Bob checks Alice\'s key',[ ['Alice\'s DH pub', alice.dh_public_key], ['Alice\'s signature', alice.signature], ['result', verification.alice_sig_valid ? '✅ VALID' : '❌ INVALID'] ])}
-          ${actor('alice','Alice verifies','Alice checks Bob\'s key',[ ['Bob\'s DH pub', bob.dh_public_key], ['Bob\'s signature', bob.signature], ['result', verification.bob_sig_valid ? '✅ VALID' : '❌ INVALID'] ])}
-        </div>
-        ${verification.both_verified
-          ? alertBox('success','✅','Both signatures verified. Identities confirmed — safe to continue.')
-          : alertBox('danger','❌','Signature invalid — exchange aborted. Possible MITM detected!')}
-      </div>`,
+      `<div class="step-lbl">Step 3 — Verification</div>
+       <div class="step-title">Signatures verified before use</div>
+       <div class="step-desc">Before computing the shared secret, each verifies the other's signature.</div>
+       <div class="actor-row">
+         ${actor('bob','Bob verifies','Checks Alice\'s key',[['Alice\'s DH pub', alice.dh_public_key, false],['signature', alice.signature, false],['result', verification.alice_sig_valid ? '✅ VALID' : '❌ INVALID', true]])}
+         ${actor('alice','Alice verifies','Checks Bob\'s key',[['Bob\'s DH pub', bob.dh_public_key, false],['signature', bob.signature, false],['result', verification.bob_sig_valid ? '✅ VALID' : '❌ INVALID', true]])}
+       </div>
+       ${verification.both_verified
+         ? alertBox('success','✅','Both verified — safe to compute shared secret.')
+         : alertBox('danger','❌','Verification failed — exchange aborted.')}`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 4 of 5</div>
-        <div class="step-title">Shared secret established securely</div>
-        <div class="step-desc">After successful verification, the shared secret is computed as in basic DH — but now it is authenticated and trustworthy.</div>
-        <div class="actor-row">
-          ${actor('alice','Alice','Alice',[ ['shared secret', alice.shared_secret ?? 'N/A'] ])}
-          ${actor('bob','Bob','Bob',[ ['shared secret', bob.shared_secret ?? 'N/A'] ])}
-        </div>
-        ${secure
-          ? alertBox('success','🔐',`Authenticated shared secret: <b>${shared_secret}</b>. MITM is prevented — any tampered key fails signature verification.`)
-          : alertBox('warn','⚠️','Exchange failed — check signature verification.')}
-      </div>`,
+      `<div class="step-lbl">Step 4 — Shared secret</div>
+       <div class="step-title">Authenticated shared secret</div>
+       <div class="step-desc">Shared secret computed after successful verification — authenticated and trustworthy.</div>
+       <div class="actor-row">
+         ${actor('alice','Alice','Alice',[['shared secret', alice.shared_secret ?? 'N/A', true]])}
+         ${actor('bob','Bob','Bob',[['shared secret', bob.shared_secret ?? 'N/A', true]])}
+       </div>
+       ${secure ? alertBox('success','🔐',`Authenticated shared secret: <b>${shared_secret}</b>`) : alertBox('warn','⚠️','Exchange failed.')}`,
 
-      `<div class="step-card">
-        <div class="step-lbl">Step 5 of 5</div>
-        <div class="step-title">Eve's forgery attempt blocked</div>
-        <div class="step-desc">Eve tries to substitute her own DH key and forge Alice's signature. Without Alice's RSA private key, she cannot produce a valid signature.</div>
-        <div class="actor-row">
-          ${actor('eve','Eve (blocked)','Eve\'s attempt',[ ['fake DH public key', eve_attempt.fake_pub], ['forged signature', eve_attempt.forged_sig], ['verification result', eve_attempt.detected ? '❌ INVALID — caught!' : '✅ passed (unexpected)'] ])}
-        </div>
-        ${eve_attempt.detected
-          ? alertBox('success','🛡️','MITM BLOCKED — Bob\'s signature check rejects Eve\'s key. Eve cannot forge Alice\'s RSA signature without her private key.')
-          : alertBox('danger','❌','Forgery not detected — unexpected result.')}
-        ${formulaBox('verify = RSA_verify( hash(fake_key), forged_sig, alice_rsa_pub ) → FALSE')}
-      </div>`,
-    ];
-    state.sig.idx = 0;
-    render('sig');
+      `<div class="step-lbl">Step 5 — Eve blocked</div>
+       <div class="step-title">Eve's forgery attempt fails</div>
+       <div class="step-desc">Eve tries to substitute her DH key with a forged signature — but she doesn't have Alice's RSA private key.</div>
+       <div class="actor-row">
+         ${actor('eve','Eve (blocked)','Eve\'s attempt',[['Eve DH private key', eve_attempt.private_key, false],['Eve fake DH public', eve_attempt.fake_pub, false],['forged signature', eve_attempt.forged_sig, false],['verify result', eve_attempt.detected ? '❌ INVALID — caught!' : '✅ passed', true]])}
+       </div>
+       ${eve_attempt.detected
+         ? alertBox('success','🛡️','MITM BLOCKED — forged signature rejected. Eve cannot fake Alice\'s RSA signature without her private key.')
+         : alertBox('danger','❌','Forgery not detected — unexpected.')}
+       ${formula('RSA_verify( hash(eve_pub), forged_sig, alice_pub ) → FALSE')}`,
+    ]);
   } catch(e) {
-    $('sig-content').innerHTML = alertBox('danger','❌','Could not reach API. Make sure the backend is running.');
+    $('sig-steps').innerHTML = alertBox('danger','❌','Cannot reach API. Make sure the backend is running.');
   }
-  $('btn-sig').disabled = false;
-  $('btn-sig').textContent = '↻ New Secure Exchange';
+  setBtn('btn-sig', false);
 }
 
-// ── Init ───────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────
 checkHealth();
-loadDH();
-loadMITM();
-loadSig();
 </script>
 </body>
 </html>

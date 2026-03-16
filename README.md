@@ -9,40 +9,70 @@
 dh_app/
 ├── main.py           ← FastAPI app (all crypto logic)
 ├── requirements.txt  ← Python dependencies
-├── index.html        ← Interactive step-by-step UI
-└── run.py            ← One-click launcher
+└── index.html        ← Interactive simulator UI
 ```
 
 ---
 
 ## How to Run
 
-### Option A — One-click launcher (recommended)
+### Step 1 — Create and activate a virtual environment
 
+**Mac / Linux:**
 ```bash
-python run.py
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-This will automatically install dependencies, start the backend, and open the frontend in your browser.
+**Windows:**
+```bat
+python -m venv .venv
+.venv\Scripts\activate
+```
 
-### Option B — Manual
+---
 
-#### Step 1 — Start the backend
+### Step 2 — Install dependencies
 
 ```bash
 pip install -r requirements.txt
+```
+
+---
+
+### Step 3 — Start the backend
+
+```bash
 uvicorn main:app --reload
 ```
 
 Backend will be live at: http://localhost:8000
 
-You can also explore the auto-generated API docs at:
-http://localhost:8000/docs
+Auto-generated API docs available at: http://localhost:8000/docs
 
-#### Step 2 — Open the frontend
+---
 
-Just open `index.html` in your browser.
-No build step, no server needed for the frontend.
+### Step 4 — Open the frontend
+
+Open `index.html` in your browser. No build step needed.
+
+---
+
+### Next time you run it
+
+You only need steps 3 and 4 — the venv and dependencies are already set up:
+
+**Mac / Linux:**
+```bash
+source .venv/bin/activate
+uvicorn main:app --reload
+```
+
+**Windows:**
+```bat
+.venv\Scripts\activate
+uvicorn main:app --reload
+```
 
 ---
 
@@ -50,9 +80,10 @@ No build step, no server needed for the frontend.
 
 | Method | Endpoint                          | Description                        |
 |--------|-----------------------------------|------------------------------------|
-| GET    | `/api/dh/exchange`                | Part 1: Basic DH key exchange      |
-| GET    | `/api/mitm/attack`                | Part 2: Simulate MITM attack       |
-| GET    | `/api/signatures/secure-exchange` | Part 3: DH secured with signatures |
+| POST   | `/api/dh/exchange`                | Part 1: Basic DH key exchange      |
+| POST   | `/api/mitm/attack`                | Part 2: Simulate MITM attack       |
+| POST   | `/api/signatures/secure-exchange` | Part 3: DH secured with signatures |
+| GET    | `/api/random-private?p=23`        | Generate a random valid private key|
 | GET    | `/`                               | Health check                       |
 
 ---

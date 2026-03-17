@@ -1,270 +1,300 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional
 import random
+from math import gcd
 from sympy import isprime, primitive_root
 
-app = FastAPI(title="DH Key Exchange API")
+app = FastAPI(title="DH + MITM + Signature Simulation")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# ============================================================
+# REQUEST MODELS
+# ============================================================
+
+class DHRequest(BaseModel):
+    p: int
+    g: int
+    alice_private: int = None
+    bob_private: int = None
 
 
-# ─── Core DH Math ────────────────────────────────────────────
+class MITMRequest(BaseModel):
+    p: int
+    g: int
+    alice_private: int = None
+    bob_private: int = None
+    eve_private1: int = None
+    eve_private2: int = None
+
+
+class SecureDHRequest(BaseModel):
+    p: int
+    g: int
+    alice_private: int = None
+    bob_private: int = None
+
+
+# ============================================================
+# VALIDATION FUNCTIONS
+# ============================================================
+
+def validate_params(p: int, g: int):
+    """
+    Validates Diffie-Hellman parameters.
+
+    p must be prime
+    g must be in range (2 <= g < p)
+
+    (Optional improvement: check primitive root)
+    """
+    if not isprime(p):
+        raise HTTPException(status_code=400, detail="p must be a prime number.")
+
+    if not (2 <= g < p):
+        raise HTTPException(status_code=400, detail="g must satisfy 2 <= g < p.")
+
+
+def validate_private(key: int, p: int, name: str):
+    """
+    Validates private key range.
+
+    Valid DH private key range:
+        2 <= private <= p-2
+    """
+    if key < 2 or key > p - 2:
+        raise HTTPException(
+            status_code=400,
+            detail=f"{name} private key must be between 2 and {p-2}."
+        )
+
+
+# ============================================================
+# DIFFIE-HELLMAN FUNCTIONS
+# ============================================================
+
 def dh_public_key(g: int, private: int, p: int) -> int:
+    """
+    Computes DH public key:
+        public = g^private mod p
+    """
     return pow(g, private, p)
 
+
 def dh_shared_secret(their_public: int, my_private: int, p: int) -> int:
+    """
+    Computes shared secret:
+        secret = (their_public)^my_private mod p
+    """
     return pow(their_public, my_private, p)
 
+
 def rand_private(p: int) -> int:
+    """Generates random private key."""
     return random.randint(2, p - 2)
 
 
-# ─── Tiny RSA (educational) ──────────────────────────────────
-def mod_inverse(a: int, m: int) -> int:
-    old_r, r = a, m
-    old_s, s = 1, 0
-    while r != 0:
-        q = old_r // r
-        old_r, r = r, old_r - q * r
-        old_s, s = s, old_s - q * s
-    return (old_s % m + m) % m
-
-def rsa_keypair(p: int, q: int):
-    n   = p * q
-    phi = (p - 1) * (q - 1)
-    e   = 17
-    d   = mod_inverse(e, phi)
-    return {"pub": [e, n], "priv": [d, n]}
-
-def rsa_sign(msg: int, priv: list) -> int:
-    d, n = priv
-    return pow(msg % n, d, n)
-
-def rsa_verify(msg: int, sig: int, pub: list) -> bool:
-    e, n = pub
-    return pow(sig, e, n) == (msg % n)
+# ============================================================
+# SIMPLE HASH FUNCTION (EDUCATIONAL ONLY)
+# ============================================================
 
 def simple_hash(val: int) -> int:
-    h = 0
-    for ch in str(val):
-        h = (h * 31 + ord(ch)) % 3000
-    return h
+    """
+    Very basic hash function (NOT secure).
+
+    Used only to demonstrate digital signatures.
+    """
+    return (val * 31 + 17) % 100000
 
 
-# ─── Validation helper ────────────────────────────────────────
-def validate_params(p: int, g: int):
-    if not isprime(p):
-        raise HTTPException(status_code=400, detail=f"p={p} is not a prime number.")
-    if p < 5:
-        raise HTTPException(status_code=400, detail="p must be at least 5.")
-    if g < 2 or g >= p:
-        raise HTTPException(status_code=400, detail=f"g must be between 2 and p-1.")
+# ============================================================
+# RSA (EDUCATIONAL IMPLEMENTATION)
+# ============================================================
 
-def validate_private(key: int, p: int, name: str):
-    if key < 2 or key > p - 2:
-        raise HTTPException(status_code=400, detail=f"{name} private key must be between 2 and {p-2}.")
+def rsa_keypair(p: int, q: int):
+    """
+    Generates RSA key pair.
 
+    NOTE: This is a SMALL and INSECURE implementation,
+    used only for demonstration.
+    """
+    n = p * q
+    phi = (p - 1) * (q - 1)
 
-# ═════════════════════════════════════════════════════════════
-#  REQUEST MODELS
-# ═════════════════════════════════════════════════════════════
+    e = 3
+    while gcd(e, phi) != 1:
+        e += 2
 
-class DHRequest(BaseModel):
-    p: int = 23
-    g: int = 5
-    alice_private: Optional[int] = None
-    bob_private:   Optional[int] = None
+    # Compute modular inverse (private key)
+    d = pow(e, -1, phi)
 
-class MITMRequest(BaseModel):
-    p: int = 23
-    g: int = 5
-    alice_private: Optional[int] = None
-    bob_private:   Optional[int] = None
-    eve_private_a: Optional[int] = None   # Eve ↔ Alice side
-    eve_private_b: Optional[int] = None   # Eve ↔ Bob side
-
-class SigRequest(BaseModel):
-    p: int = 23
-    g: int = 5
-    alice_private: Optional[int] = None
-    bob_private:   Optional[int] = None
-    eve_private:   Optional[int] = None
+    return (e, n), (d, n)
 
 
-# ═════════════════════════════════════════════════════════════
-#  ROUTES
-# ═════════════════════════════════════════════════════════════
+def rsa_sign(message: int, privkey):
+    """
+    Signs a message using RSA private key.
+    """
+    d, n = privkey
+    return pow(message, d, n)
 
-# ── Part 1: Basic DH ─────────────────────────────────────────
-@app.post("/api/dh/exchange")
-def dh_exchange(req: DHRequest):
-    validate_params(req.p, req.g)
 
-    alice_priv = req.alice_private if req.alice_private is not None else rand_private(req.p)
-    bob_priv   = req.bob_private   if req.bob_private   is not None else rand_private(req.p)
+def rsa_verify(message: int, signature: int, pubkey):
+    """
+    Verifies RSA signature.
+    """
+    e, n = pubkey
+    return pow(signature, e, n) == message
 
-    validate_private(alice_priv, req.p, "Alice")
-    validate_private(bob_priv,   req.p, "Bob")
 
-    alice_pub    = dh_public_key(req.g, alice_priv, req.p)
-    bob_pub      = dh_public_key(req.g, bob_priv,   req.p)
-    alice_secret = dh_shared_secret(bob_pub,   alice_priv, req.p)
-    bob_secret   = dh_shared_secret(alice_pub, bob_priv,   req.p)
+# ============================================================
+# API 1: NORMAL DIFFIE-HELLMAN
+# ============================================================
+
+@app.post("/api/dh/compute")
+def dh_compute(req: DHRequest):
+    """
+    Normal Diffie-Hellman key exchange.
+
+    Steps:
+    1. Generate private keys
+    2. Compute public keys
+    3. Exchange public keys
+    4. Compute shared secret
+    """
+
+    p, g = req.p, req.g
+    validate_params(p, g)
+
+    alice_priv = req.alice_private or rand_private(p)
+    bob_priv = req.bob_private or rand_private(p)
+
+    validate_private(alice_priv, p, "Alice")
+    validate_private(bob_priv, p, "Bob")
+
+    # Generate public keys
+    alice_pub = dh_public_key(g, alice_priv, p)
+    bob_pub = dh_public_key(g, bob_priv, p)
+
+    # Compute shared secrets
+    alice_secret = dh_shared_secret(bob_pub, alice_priv, p)
+    bob_secret = dh_shared_secret(alice_pub, bob_priv, p)
 
     return {
-        "params": {"p": req.p, "g": req.g},
-        "alice": {
-            "private_key":    alice_priv,
-            "public_key":     alice_pub,
-            "formula":        f"{req.g}^{alice_priv} mod {req.p} = {alice_pub}",
-            "shared_secret":  alice_secret,
-            "secret_formula": f"{bob_pub}^{alice_priv} mod {req.p} = {alice_secret}",
-        },
-        "bob": {
-            "private_key":    bob_priv,
-            "public_key":     bob_pub,
-            "formula":        f"{req.g}^{bob_priv} mod {req.p} = {bob_pub}",
-            "shared_secret":  bob_secret,
-            "secret_formula": f"{alice_pub}^{bob_priv} mod {req.p} = {bob_secret}",
-        },
-        "match":          alice_secret == bob_secret,
-        "shared_secret":  alice_secret,
+        "alice_public": alice_pub,
+        "bob_public": bob_pub,
+        "alice_secret": alice_secret,
+        "bob_secret": bob_secret,
+        "match": alice_secret == bob_secret
     }
 
 
-# ── Part 2: MITM Attack ───────────────────────────────────────
+# ============================================================
+# API 2: MITM ATTACK SIMULATION
+# ============================================================
+
 @app.post("/api/mitm/attack")
 def mitm_attack(req: MITMRequest):
-    validate_params(req.p, req.g)
+    """
+    Simulates Man-in-the-Middle attack.
 
-    alice_priv = req.alice_private if req.alice_private is not None else rand_private(req.p)
-    bob_priv   = req.bob_private   if req.bob_private   is not None else rand_private(req.p)
-    e_priv_a   = req.eve_private_a if req.eve_private_a is not None else rand_private(req.p)
-    e_priv_b   = req.eve_private_b if req.eve_private_b is not None else rand_private(req.p)
+    Eve intercepts and replaces public keys.
 
-    for val, name in [(alice_priv,"Alice"),(bob_priv,"Bob"),(e_priv_a,"Eve(A)"),(e_priv_b,"Eve(B)")]:
-        validate_private(val, req.p, name)
+    Result:
+        Alice ↔ Eve (secret 1)
+        Bob   ↔ Eve (secret 2)
+    """
 
-    alice_pub = dh_public_key(req.g, alice_priv, req.p)
-    bob_pub   = dh_public_key(req.g, bob_priv,   req.p)
-    e_pub_a   = dh_public_key(req.g, e_priv_a,   req.p)
-    e_pub_b   = dh_public_key(req.g, e_priv_b,   req.p)
+    p, g = req.p, req.g
+    validate_params(p, g)
 
-    alice_secret   = dh_shared_secret(e_pub_b,   alice_priv, req.p)
-    bob_secret     = dh_shared_secret(e_pub_a,   bob_priv,   req.p)
-    eve_with_alice = dh_shared_secret(alice_pub, e_priv_b,   req.p)
-    eve_with_bob   = dh_shared_secret(bob_pub,   e_priv_a,   req.p)
+    # Private keys
+    alice_priv = req.alice_private or rand_private(p)
+    bob_priv = req.bob_private or rand_private(p)
+    eve_priv_a = req.eve_private1 or rand_private(p)
+    eve_priv_b = req.eve_private2 or rand_private(p)
+
+    validate_private(alice_priv, p, "Alice")
+    validate_private(bob_priv, p, "Bob")
+
+    # Public keys
+    alice_pub = dh_public_key(g, alice_priv, p)
+    bob_pub = dh_public_key(g, bob_priv, p)
+
+    eve_pub_a = dh_public_key(g, eve_priv_a, p)
+    eve_pub_b = dh_public_key(g, eve_priv_b, p)
+
+    # Attack happens here
+    alice_secret = dh_shared_secret(eve_pub_b, alice_priv, p)
+    bob_secret = dh_shared_secret(eve_pub_a, bob_priv, p)
+
+    eve_with_alice = dh_shared_secret(alice_pub, eve_priv_b, p)
+    eve_with_bob = dh_shared_secret(bob_pub, eve_priv_a, p)
 
     return {
-        "params": {"p": req.p, "g": req.g},
-        "alice": {
-            "private_key": alice_priv,
-            "public_key":  alice_pub,
-            "thinks_shared_secret_with_bob": alice_secret,
-        },
-        "bob": {
-            "private_key": bob_priv,
-            "public_key":  bob_pub,
-            "thinks_shared_secret_with_alice": bob_secret,
-        },
-        "eve": {
-            "private_key_a":      e_priv_a,
-            "private_key_b":      e_priv_b,
-            "fake_pub_sent_to_bob":   e_pub_b,
-            "fake_pub_sent_to_alice": e_pub_a,
-            "secret_with_alice":      eve_with_alice,
-            "secret_with_bob":        eve_with_bob,
-        },
-        "mitm_success":     alice_secret == eve_with_alice and bob_secret == eve_with_bob,
-        "alice_compromised": alice_secret == eve_with_alice,
-        "bob_compromised":   bob_secret   == eve_with_bob,
+        "alice_secret": alice_secret,
+        "bob_secret": bob_secret,
+        "eve_with_alice": eve_with_alice,
+        "eve_with_bob": eve_with_bob,
+        "attack_success": (
+            alice_secret == eve_with_alice and
+            bob_secret == eve_with_bob
+        )
     }
 
 
-# ── Part 3: Secure DH with Digital Signatures ────────────────
-@app.post("/api/signatures/secure-exchange")
-def secure_exchange(req: SigRequest):
-    validate_params(req.p, req.g)
+# ============================================================
+# API 3: SECURE DH WITH DIGITAL SIGNATURES
+# ============================================================
 
-    alice_priv = req.alice_private if req.alice_private is not None else rand_private(req.p)
-    bob_priv   = req.bob_private   if req.bob_private   is not None else rand_private(req.p)
-    e_priv     = req.eve_private   if req.eve_private   is not None else rand_private(req.p)
+@app.post("/api/dh/secure")
+def secure_dh(req: SecureDHRequest):
+    """
+    Prevent MITM using digital signatures.
 
-    validate_private(alice_priv, req.p, "Alice")
-    validate_private(bob_priv,   req.p, "Bob")
-    validate_private(e_priv,     req.p, "Eve")
+    Steps:
+    1. Generate DH public keys
+    2. Hash them
+    3. Sign using RSA
+    4. Verify signatures before accepting keys
+    """
 
-    alice_rsa = rsa_keypair(61, 53)
-    bob_rsa   = rsa_keypair(67, 71)
+    p, g = req.p, req.g
+    validate_params(p, g)
 
-    alice_pub = dh_public_key(req.g, alice_priv, req.p)
-    bob_pub   = dh_public_key(req.g, bob_priv,   req.p)
-    e_pub     = dh_public_key(req.g, e_priv,     req.p)
+    alice_priv = req.alice_private or rand_private(p)
+    bob_priv = req.bob_private or rand_private(p)
 
+    validate_private(alice_priv, p, "Alice")
+    validate_private(bob_priv, p, "Bob")
+
+    # DH public keys
+    alice_pub = dh_public_key(g, alice_priv, p)
+    bob_pub = dh_public_key(g, bob_priv, p)
+
+    # Generate RSA keys (educational)
+    alice_pubkey, alice_privkey = rsa_keypair(61, 53)
+    bob_pubkey, bob_privkey = rsa_keypair(67, 71)
+
+    # Hash public keys
     alice_hash = simple_hash(alice_pub)
-    alice_sig  = rsa_sign(alice_hash, alice_rsa["priv"])
-    bob_hash   = simple_hash(bob_pub)
-    bob_sig    = rsa_sign(bob_hash, bob_rsa["priv"])
+    bob_hash = simple_hash(bob_pub)
 
-    alice_sig_valid = rsa_verify(simple_hash(alice_pub), alice_sig, alice_rsa["pub"])
-    bob_sig_valid   = rsa_verify(simple_hash(bob_pub),   bob_sig,   bob_rsa["pub"])
+    # Sign hashes
+    alice_sig = rsa_sign(alice_hash, alice_privkey)
+    bob_sig = rsa_sign(bob_hash, bob_privkey)
 
-    forge_sig      = rsa_sign(simple_hash(e_pub), alice_rsa["priv"]) + 1
-    forge_detected = not rsa_verify(simple_hash(e_pub), forge_sig, alice_rsa["pub"])
+    # Verify signatures
+    alice_valid = rsa_verify(alice_hash, alice_sig, alice_pubkey)
+    bob_valid = rsa_verify(bob_hash, bob_sig, bob_pubkey)
 
-    alice_secret = dh_shared_secret(bob_pub,   alice_priv, req.p) if (alice_sig_valid and bob_sig_valid) else None
-    bob_secret   = dh_shared_secret(alice_pub, bob_priv,   req.p) if (alice_sig_valid and bob_sig_valid) else None
+    if not (alice_valid and bob_valid):
+        return {"error": "MITM detected!"}
+
+    # Compute shared secrets
+    alice_secret = dh_shared_secret(bob_pub, alice_priv, p)
+    bob_secret = dh_shared_secret(alice_pub, bob_priv, p)
 
     return {
-        "params": {"p": req.p, "g": req.g},
-        "alice": {
-            "private_key":    alice_priv,
-            "dh_public_key":  alice_pub,
-            "rsa_public_key": alice_rsa["pub"],
-            "dh_hash":        alice_hash,
-            "signature":      alice_sig,
-            "shared_secret":  alice_secret,
-        },
-        "bob": {
-            "private_key":    bob_priv,
-            "dh_public_key":  bob_pub,
-            "rsa_public_key": bob_rsa["pub"],
-            "dh_hash":        bob_hash,
-            "signature":      bob_sig,
-            "shared_secret":  bob_secret,
-        },
-        "verification": {
-            "alice_sig_valid": alice_sig_valid,
-            "bob_sig_valid":   bob_sig_valid,
-            "both_verified":   alice_sig_valid and bob_sig_valid,
-        },
-        "eve_attempt": {
-            "private_key": e_priv,
-            "fake_pub":    e_pub,
-            "forged_sig":  forge_sig,
-            "detected":    forge_detected,
-        },
-        "secure":        alice_sig_valid and bob_sig_valid and alice_secret == bob_secret,
-        "shared_secret": alice_secret,
+        "alice_secret": alice_secret,
+        "bob_secret": bob_secret,
+        "secure": True
     }
-
-
-# ── Utility: random valid private key ────────────────────────
-@app.get("/api/random-private")
-def random_private(p: int = 23):
-    if not isprime(p) or p < 5:
-        raise HTTPException(status_code=400, detail="Invalid prime.")
-    return {"value": rand_private(p)}
-
-
-# ── Health check ─────────────────────────────────────────────
-@app.get("/")
-def root():
-    return {"status": "DH Simulator API running", "version": "2.0"}
